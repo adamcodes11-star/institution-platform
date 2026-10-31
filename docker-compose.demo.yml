@@ -1,0 +1,21 @@
+# Local-only database for portfolio demonstrations (NOT production).
+# Test credentials are deliberately public; the database port is bound only
+# to loopback on the reviewer's own computer.
+services:
+  postgres-demo:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: institution_platform_demo
+      POSTGRES_USER: demo_user
+      POSTGRES_PASSWORD: demo_local_only
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - institution_demo_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U demo_user -d institution_platform_demo"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+volumes:
+  institution_demo_postgres_data:
